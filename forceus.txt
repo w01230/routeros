@@ -1,4 +1,5 @@
 payload:
+  #spotify
   - '+.pscdn.co'
   - '+.scdn.co'
   - '+.spoti.fi'
@@ -12,3 +13,5 @@ payload:
   - '+.spotifyforbrands.com'
   - '+.spotifyjobs.com'
   - '+.spotify.com'
+  #openai
+  - '+.openai.com'
