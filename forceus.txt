@@ -15,3 +15,5 @@ payload:
   - '+.spotify.com'
   #openai
   - '+.openai.com'
+  #bard
+  - '+.bard.google.com'
