@@ -1,0 +1,23 @@
+   wget https://go.dev/dl/go1.20.7.linux-amd64.tar.gz
+   rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.7.linux-amd64.tar.gz
+   echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.profile
+   source $HOME/.profile
+   go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+   ls
+   go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+       ~/go/bin/xcaddy build --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive
+   cp caddy /usr/bin/
+   rm go1.20.7.linux-amd64.tar.gz
+   mkdir /etc/caddy
+   cd /etc/caddy/
+   vim Caddyfile
+   cd /etc/systemd/system
+   ls
+  vim caddy.service
+  clear
+  sudo systemctl enable caddy.service
+  ls -l
+  cat caddy.service 
+  systemctl start caddy.service
+  systemctl status caddy.service 
+  ls .local/share/caddy/
