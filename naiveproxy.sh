@@ -27,11 +27,11 @@ cp caddy /usr/bin/
 mkdir -p /etc/caddy
 
 # Install configuration
-server=":443, 2.012301.xyz"
-tls="tls m@012301.xyz"
+server=":443, domain.com"
+tls="tls m@domain.com"
 route="route {
         forward_proxy {
-                basic_auth 0x01230 oNRveOk6doQBfBRoijLLTA==
+                basic_auth 0x01230 psk
                 hide_ip
                 hide_via
                 probe_resistance
