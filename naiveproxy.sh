@@ -1,29 +1,10 @@
 #!/bin/bash
 
-# Install dependencies based on the Linux distribution
-if cat /etc/*-release | grep -q -E -i "debian|ubuntu|armbian|deepin|mint"; then
-     apt-get install wget unzip dpkg -y
-elif cat /etc/*-release | grep -q -E -i "centos|red hat|redhat"; then
-     yum install wget unzip dpkg -y
-elif cat /etc/*-release | grep -q -E -i "arch|manjaro"; then
-     pacman -S wget dpkg unzip --noconfirm
-elif cat /etc/*-release | grep -q -E -i "fedora"; then
-     dnf install wget unzip dpkg -y
-fi
-
-# Swith to home
-cd
-
-# Install go
-wget https://go.dev/dl/go1.20.7.linux-amd64.tar.gz
-rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.7.linux-amd64.tar.gz
-echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.profile
-source $HOME/.profile
-
 # Install caddy
-go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-       ~/go/bin/xcaddy build --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive
-cp caddy /usr/bin/
+curl -s https://api.github.com/repos/klzgrad/forwardproxy/releases/latest | grep browser_download_url | cut -d '"' -f 4 |  xargs wget -qi -
+xz -d caddy-forwardproxy-naive.xz
+tar -xf caddy-forwardproxy-naive.tar
+cp caddy-forwardproxy-naive/caddy /usr/bin/
 mkdir -p /etc/caddy
 
 # Install configuration
