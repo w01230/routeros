@@ -49,8 +49,8 @@ LimitNOFILE=infinity
 
 [Install]
 WantedBy=multi-user.target"
-echo -e "$service\n" |  tee /etc/systemd/system/tuic-server.service > /dev/null
+echo -e "$service\n" |  tee /etc/systemd/system/tuic.service > /dev/null
 
 # Enable service
-systemctl enable tuic-server.service
-systemctl start tuic-server.service
+systemctl enable tuic.service
+systemctl start tuic.service
