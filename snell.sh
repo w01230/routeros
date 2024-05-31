@@ -13,7 +13,7 @@ mv -f snell-server.conf /etc/snell/
 mv -f snell-server /usr/bin/
 systemctl daemon-reload
 systemctl start snell
-systemctl enable snell
+#systemctl enable snell
 
 # Print profile
 echo
