@@ -2,7 +2,7 @@
 
 # Install caddy
 curl -s https://api.github.com/repos/klzgrad/forwardproxy/releases/latest | grep browser_download_url | cut -d '"' -f 4 |  xargs wget -qi -
-xz -d caddy-forwardproxy-naive.xz
+xz -d caddy-forwardproxy-naive.tar.xz
 tar -xf caddy-forwardproxy-naive.tar
 cp caddy-forwardproxy-naive/caddy /usr/bin/
 mkdir -p /etc/caddy
@@ -49,4 +49,4 @@ echo -e "$service\n" |  tee /etc/systemd/system/caddy.service > /dev/null
 
 # Enable service
 systemctl enable caddy.service
-systemctl start caddy.service
+#systemctl start caddy.service
