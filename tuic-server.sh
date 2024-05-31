@@ -1,16 +1,5 @@
 #!/bin/bash
 
-# Install dependencies based on the Linux distribution
-if cat /etc/*-release | grep -q -E -i "debian|ubuntu|armbian|deepin|mint"; then
-     apt-get install wget unzip dpkg -y
-elif cat /etc/*-release | grep -q -E -i "centos|red hat|redhat"; then
-     yum install wget unzip dpkg -y
-elif cat /etc/*-release | grep -q -E -i "arch|manjaro"; then
-     pacman -S wget dpkg unzip --noconfirm
-elif cat /etc/*-release | grep -q -E -i "fedora"; then
-     dnf install wget unzip dpkg -y
-fi
-
 # Swith to home
 cd
 
@@ -53,4 +42,4 @@ echo -e "$service\n" |  tee /etc/systemd/system/tuic.service > /dev/null
 
 # Enable service
 systemctl enable tuic.service
-systemctl start tuic.service
+#systemctl start tuic.service
