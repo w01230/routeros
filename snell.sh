@@ -1,16 +1,5 @@
 #!/bin/bash
 
-# Install dependencies based on the Linux distribution
-if cat /etc/*-release | grep -q -E -i "debian|ubuntu|armbian|deepin|mint"; then
-     apt-get install wget unzip dpkg -y
-elif cat /etc/*-release | grep -q -E -i "centos|red hat|redhat"; then
-     yum install wget unzip dpkg -y
-elif cat /etc/*-release | grep -q -E -i "arch|manjaro"; then
-     pacman -S wget dpkg unzip --noconfirm
-elif cat /etc/*-release | grep -q -E -i "fedora"; then
-     dnf install wget unzip dpkg -y
-fi
-
 cd
 ARCHITECTURE=$(uname -m)
 wget -c https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-amd64.zip
