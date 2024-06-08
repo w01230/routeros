@@ -1,14 +1,28 @@
 #!/bin/bash
 
-# Swith to home
-cd
+# 创建目录用于存储 TUIC
+sudo mkdir -p /etc/tuic
+cd /etc/tuic
 
-# Install tuic
-curl -Lo tuic-server https://github.com/EAimTY/tuic/releases/latest/download/tuic-server-1.0.0-x86_64-unknown-linux-gnu && chmod +x tuic-server && mv -f tuic-server /usr/local/bin/
-mkdir -p /etc/tuic/
+# 下载并安装 TUIC 最新版本
+TUIC_URL="https://github.com/EAimTY/tuic/releases/latest/download/tuic-server-linux-amd64.zip"
+wget $TUIC_URL -O tuic.zip
+unzip tuic.zip
 
-# Install configuration
-server="{
+# 获取解压后的文件夹名称
+TUIC_DIR=$(unzip -Z1 tuic.zip | head -1 | cut -d '/' -f1)
+
+# 移动 tuic-server 可执行文件到 /usr/local/bin/
+sudo mv $TUIC_DIR/tuic-server /usr/local/bin/
+rm -r $TUIC_DIR
+rm tuic.zip
+
+# 生成随机密码
+TUIC_PASSWORD=$(openssl rand -base64 16)
+
+# 创建 TUIC 配置文件
+cat <<EOF | sudo tee /etc/tuic/tuic-config.json
+{
     "server": "0.0.0.0:10443",
     "users": {
         "uuid": "psk"
@@ -18,28 +32,26 @@ server="{
     "congestion_control": "bbr",
     "alpn": ["h3"],
     "log_level": "warn"
-}"
-echo -e "$server\n" | tee /etc/tuic/tuic-server.json > /dev/null
+}
+EOF
 
-# Install service
-service="[Unit]
-After=network.target nss-lookup.target
+# 创建 Systemd 服务文件用于 TUIC
+cat <<EOF | sudo tee /etc/systemd/system/tuic.service
+[Unit]
+Description=TUIC Server Service
+After=network.target
 
 [Service]
-User=root
-WorkingDirectory=/root
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-ExecStart=/usr/local/bin/tuic-server -c /etc/tuic/tuic-server.json
+ExecStart=/usr/local/bin/tuic-server -c /etc/tuic/tuic-config.json
 Restart=on-failure
-RestartSec=10
-LimitNPROC=512
-LimitNOFILE=infinity
 
 [Install]
-WantedBy=multi-user.target"
-echo -e "$service\n" |  tee /etc/systemd/system/tuic.service > /dev/null
+WantedBy=multi-user.target
+EOF
 
-# Enable service
-systemctl enable tuic.service
-#systemctl start tuic.service
+# 启用并启动服务
+sudo systemctl enable tuic
+#sudo systemctl start tuic
+
+echo "TUIC 服务器安装配置完成！"
+echo "TUIC 密码: $TUIC_PASSWORD"
