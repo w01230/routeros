@@ -42,7 +42,7 @@ EOF
 
 # 启用并启动服务
 sudo systemctl enable snell
-sudo systemctl start snell
+#sudo systemctl start snell
 
 echo "Snell 服务器安装配置完成！"
 echo "Snell 密码: $SNELL_PASSWORD"
