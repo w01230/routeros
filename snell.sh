@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 下载并安装 Snell 最新版本
-SNELL_URL="https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-amd64.zip"
+SNELL_URL="https://dl.nssurge.com/snell/snell-server-v4.1.1-linux-amd64.zip"
 wget $SNELL_URL -O snell.zip
 unzip snell.zip
 
@@ -9,8 +9,12 @@ unzip snell.zip
 SNELL_DIR=$(unzip -Z1 snell.zip | head -1 | cut -d '/' -f1)
 
 # 移动 snell-server 可执行文件到 /usr/local/bin/
-sudo mv $SNELL_DIR/snell-server /usr/local/bin/
-rm -r $SNELL_DIR
+if [ -n "$SNELL_DIR" ]; then
+    sudo mv $SNELL_DIR/snell-server /usr/local/bin/
+    rm -r $SNELL_DIR
+else
+    sudo mv snell-server /usr/local/bin/
+fi
 rm snell.zip
 
 # 生成随机密码
