@@ -9,12 +9,12 @@ unzip snell.zip
 SNELL_DIR=$(unzip -Z1 snell.zip | head -1 | cut -d '/' -f1)
 
 # 移动 snell-server 可执行文件到 /usr/local/bin/
-if [ -n "$SNELL_DIR" ]; then
-    sudo mv $SNELL_DIR/snell-server /usr/local/bin/
-    rm -r $SNELL_DIR
-else
-    sudo mv snell-server /usr/local/bin/
-fi
+#if [ -n "$SNELL_DIR" ]; then
+#    sudo mv $SNELL_DIR/snell-server /usr/local/bin/
+#    rm -r $SNELL_DIR
+#else
+sudo mv snell-server /usr/local/bin/
+#fi
 rm snell.zip
 
 # 生成随机密码
