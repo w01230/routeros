@@ -1,0 +1,7 @@
+/interface/veth/add name=veth1 address=10.13.0.2/24 gateway=10.13.0.1
+/interface/bridge/port add bridge=bridge1 interface=veth1
+/container/envs/add key=net name=zt value=host
+/container/envs/add key=cap-add name=zt value=NET_ADMIN
+/container/envs/add key=device name=zt value=/dev/net/tun
+/container/config/set registry-url=https://registry-1.docker.io tmpdir=disk1/pull
+/container/add remote-image=zyclonite/zerotier:latest interface=veth1 root-dir=disk1/zerotier envlist=zt
