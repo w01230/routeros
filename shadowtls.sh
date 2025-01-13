@@ -19,11 +19,6 @@ SHADOWTLS_PASSWORD=$(openssl rand -base64 16)
 sudo mkdir -p /etc/sing-box
 cat <<EOF | sudo tee /etc/sing-box/config.json
 {
-    "log": 
-    {
-        "level": "warn"
-    },
-
     "inbounds": 
     [
         {
@@ -43,7 +38,7 @@ cat <<EOF | sudo tee /etc/sing-box/config.json
                 "server": "icloud.com",
                 "server_port": 443
             },
-            "strict_mode": true
+            "detour": "shadowsocks-in"
         },
         {
             "type": "shadowsocks",
