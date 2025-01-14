@@ -38,7 +38,7 @@ cat <<EOF | sudo tee /etc/sing-box/config.json
                 "server": "icloud.com",
                 "server_port": 443
             },
-            "detour": "shadowsocks-in"
+            "strict_mode": true
         },
         {
             "type": "shadowsocks",
