@@ -45,12 +45,7 @@ cat <<EOF | sudo tee /etc/sing-box/config.json
             "tag": "shadowsocks-in",
             "listen": "127.0.0.1",
             "method": "2022-blake3-aes-128-gcm",
-            "password": "$SHADOWSOCKS_PASSWORD", 
-            "multiplex": 
-            {
-                "enabled": true,
-                "padding": true
-            }
+            "password": "$SHADOWSOCKS_PASSWORD"
         }
     ],
 
