@@ -1,0 +1,148 @@
+mixed-port: 8003                        # HTTP(S) 和 SOCKS 代理混合端口
+mode: rule                              # 规则模式：rule（规则） / global（全局代理）/ direct（全局直连）/ script (脚本)
+log-level: error                        # 设置日志输出级别 (5 个级别：silent / error / warning / info / debug）
+allow-lan: true                         # 允许局域网的连接（共享代理）
+unified-delay: true                     # 开启统一延迟时，会进行两次延迟测试，以消除连接握手等带来的不同类型节点的延迟差异，可选值 true/false
+find-process-mode: off                  # 控制是否让 Clash 去匹配进程，always 开启，强制匹配所有进程，strict 默认，由 Clash 判断是否开启，off 不匹配进程，推荐在路由器上使用此模式
+geodata-mode: false                     # 更改 geoip 使用文件，mmdb 或者 dat，可选 true/false,true为 dat，此项有默认值 false
+
+external-controller: ":80"              # RESTful API 监听地址
+external-ui: /home/clash/web/           # 配置 WEB UI 目录，使用 http://{{external-controller}}/ui 访问
+secret: "000000"                        # RESTful API 的访问密钥
+
+dns:
+  enable: true                          # 关闭将使用系统 DNS
+  ipv6: false                           # false 将返回 AAAA 的空结果
+  listen: ":53"                         # DNS 监听地址
+  enhanced-mode: fake-ip                # 模式：redir-host或fake-ip
+  fake-ip-filter:                       # 配置不使用 fake-ip 的域名
+    - "*.lan"
+    #- '*.onion'
+  default-nameserver:                   # 用于解析 nameserver，fallback 以及其他 DNS 服务器配置的，DNS 服务域名, 只能使用纯 IP 地址，可使用加密 DNS
+    - 180.184.1.1
+    - 223.5.5.5
+  nameserver:                           # DNS 主要域名配置, 支持 UDP，TCP，DoT，DoH，DoQ, 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
+    - https://223.5.5.5/dns-query
+    - https://119.29.29.29/dns-query
+  fallback:                             # 当配置 fallback 时，会查询 nameserver 中返回的 IP 是否为 CN，非必要配置
+    - https://1.0.0.1/dns-query
+    - https://8.8.8.8/dns-query
+  nameserver-policy:                    # 指定域名查询的解析服务器，可使用 geosite, 优先于 nameserver/fallback 查询
+    #- '*.onion': '10.10.0.4:8053'
+  proxy-server-nameserver:
+    - 180.184.1.1
+    - 223.5.5.5
+
+tun:
+  enable: true                          # 启用/关闭 tun
+  stack: system                         # tun 模式堆栈,可用值：system/gvisor/mixed
+  auto-detect-interface: true           # 自动识别出口网卡
+  auto-route: true                      # 自动设置全局路由，可以自动将全局流量路由进入 tun 网卡
+  route-exclude-address:                # 启用 auto-route 时排除自定义网段
+    - 10.0.0.0/8
+
+proxies:
+  - name: "DMIT.HKG.VICTORIA"
+    type: socks5
+    server: 10.10.0.3
+    port: 1080
+    udp: false
+
+  - name: "DMIT.HKG.VICTORIA6"
+    type: socks5
+    server: 10.10.0.3
+    port: 1081
+    udp: false
+
+  - name: "MISAKA.SIN.4"
+    type: socks5
+    server: 10.10.0.3
+    port: 1180
+    udp: false
+
+  - name: "MISAKA.SIN.6"
+    type: socks5
+    server: 10.10.0.3
+    port: 1181
+    udp: false
+
+  - name: "DMIT.LAX.PalmSpring"
+    type: socks5
+    server: 10.10.0.3
+    port: 1280
+    udp: false
+
+  - name: "DMIT.LAX.CORONA"
+    type: socks5
+    server: 10.10.0.3
+    port: 1281
+    udp: false
+
+proxy-groups:
+  # Region
+  - name: HKG
+    type: url-test
+    include-all: true
+    filter: "(?i)港|HK|HongKong|Hong Kong"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 60
+    tolerance: 10
+    hidden: true
+
+  - name: USA
+    type: url-test
+    include-all: true
+    filter: "(?i)美|US|LAX|UnitedStates|United States"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 60
+    tolerance: 10
+    hidden: true
+
+  - name: SIN
+    type: url-test
+    include-all: true
+    filter: "(?i)(新|SG|SIN|Singapore)"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 60
+    tolerance: 10
+    hidden: true
+
+  #- name: TW
+  #  type: url-test
+  #  include-all: true
+  #  filter: "(?i)台|TW|Taiwan"
+  #  url: 'http://www.gstatic.com/generate_204'
+  #  interval: 60
+  #  tolerance: 10
+  #  hidden: true
+
+  # Policy
+  - name: HKG.PRIO
+    type: select
+    proxies: [HKG, USA, SIN]
+
+  - name: USA.PRIO
+    type: select
+    proxies: [USA, HKG, SIN]
+
+  - name: SIN.PRIO
+    type: select
+    proxies: [SIN, USA]
+
+  #- name: Manual
+  #  type: select
+  #  include-all: true
+
+rules:
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
+
+  - GEOSITE,spotify,USA.PRIO
+  - GEOSITE,google,USA.PRIO
+  - GEOIP,google,USA.PRIO,no-resolve
+  - GEOIP,telegram,USA.PRIO,no-resolve
+
+  - DOMAIN-SUFFIX,zed.dev,SIN.PRIO
+  - GEOSITE,category-ai-chat-!cn,SIN.PRIO
+  - GEOSITE,binance,SIN.PRIO
+
+  - MATCH,HKG.PRIO
