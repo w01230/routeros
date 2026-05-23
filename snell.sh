@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 下载并安装 Snell 最新版本
-SNELL_URL="https://dl.nssurge.com/snell/snell-server-v4.1.1-linux-amd64.zip"
+SNELL_URL="https://dl.nssurge.com/snell/snell-server-v5.0.1-linux-amd64.zip"
 wget $SNELL_URL -O snell.zip
 unzip snell.zip
 
